@@ -1,0 +1,40 @@
+{
+  "family": "webapp-prod-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::314146322404:role/webapp-prod-ECSTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::314146322404:role/webapp-prod-ECSTaskRole",
+  "containerDefinitions": [
+    {
+      "name": "webapp-prod-container",
+      "image": "314146322404.dkr.ecr.eu-central-1.amazonaws.com/webapp-prod-app:latest",
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "AWS_REGION",
+          "value": "eu-central-1"
+        },
+        {
+          "name": "S3_BUCKET_NAME",
+          "value": "webapp-prod-images-314146322404-eu-central-1"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/webapp-prod",
+          "awslogs-region": "eu-central-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "essential": true
+    }
+  ]
+}
