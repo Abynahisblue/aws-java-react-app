@@ -11,8 +11,5 @@ services:
       - AWS_REGION=eu-central-1
       # S3 Bucket Name for image storage
       - S3_BUCKET_NAME=webapp-prod-images-314146322404-eu-central-1
-      # AWS Access Key ID - IMPORTANT: For production, use IAM roles instead of direct keys.
-      - AWS_ACCESS_KEY_ID=AKIAUSJEUO7SIFCASWN5
-      # AWS Secret Access Key - IMPORTANT: For production, use IAM roles instead of direct keys.
-      - AWS_SECRET_ACCESS_KEY=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
+      
     
