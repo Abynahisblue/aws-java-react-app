@@ -24,12 +24,16 @@
         {
           "name": "S3_BUCKET_NAME",
           "value": "webapp-prod-images-314146322404-eu-central-1"
+        },
+        {
+          "name": "ENVIRONMENT",
+          "value": "prod"
         }
       ],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/ecs/webapp-prod",
+          "awslogs-group": "/aws/ecs/webapp-prod",
           "awslogs-region": "eu-central-1",
           "awslogs-stream-prefix": "ecs"
         }
