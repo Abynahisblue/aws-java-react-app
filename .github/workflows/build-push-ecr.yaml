@@ -7,7 +7,7 @@ on:
 env:
   AWS_REGION: eu-central-1
   ECR_REPOSITORY: webapp-prod-app
-  BASE_IMAGE: public.ecr.aws/amazoncorretto/amazoncorretto:21-alpine
+  BASE_IMAGE: public.ecr.aws/amazoncorretto/amazoncorretto:21-jdk
 
 jobs:
   build-and-push:
