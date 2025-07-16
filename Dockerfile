@@ -7,7 +7,7 @@ COPY webapp-frontend/ ./
 RUN npm run build
 
 # Stage 2: Build the Java backend
-FROM  public.ecr.aws/docker/library/maven:3.9.9-amazoncorretto-21 AS backend-builder
+FROM public.ecr.aws/docker/library/maven:3.9.9-amazoncorretto-21 AS backend-builder
 WORKDIR /app/webapp
 COPY webapp/pom.xml .
 RUN mvn dependency:go-offline
@@ -15,7 +15,8 @@ COPY webapp/src ./src
 RUN mvn package -DskipTests
 
 # Stage 3: Create the final image
-FROM 314146322404.dkr.ecr.eu-central-1.amazonaws.com/base-images/amazoncorretto:21-alpine-jdk
+# Changed the base image to a publicly available Amazon Corretto 21 Alpine JDK image
+FROM public.ecr.aws/amazoncorretto/amazoncorretto:21-alpine-jdk
 WORKDIR /app
 
 # Copy the built backend JAR
