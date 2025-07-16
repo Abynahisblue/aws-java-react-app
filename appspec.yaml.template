@@ -5,6 +5,6 @@ Resources:
       Properties:
         TaskDefinition: <TASK_DEFINITION>
         LoadBalancerInfo:
-          ContainerName: "<CONTAINER_NAME>"
+          ContainerName: "webapp-prod-container"
           ContainerPort: 8080
         PlatformVersion: "LATEST"
