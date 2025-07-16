@@ -8,7 +8,7 @@
   "taskRoleArn": "arn:aws:iam::314146322404:role/webapp-prod-ECSTaskRole",
   "containerDefinitions": [
     {
-      "name": "webapp-prod-container",
+      "name":"webapp-prod-container",
       "image": "<IMAGE1_NAME>",
       "portMappings": [
         {
