@@ -9,7 +9,7 @@
   "containerDefinitions": [
     {
       "name": "webapp-prod-container",
-      "image": "314146322404.dkr.ecr.eu-central-1.amazonaws.com/webapp-prod-app:latest",
+      "image": "<IMAGE1_NAME>",
       "portMappings": [
         {
           "containerPort": 8080,
@@ -34,7 +34,17 @@
           "awslogs-stream-prefix": "ecs"
         }
       },
-      "essential": true
+      "essential": true,
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:8080/ || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 60
+      }
     }
   ]
 }

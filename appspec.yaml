@@ -7,3 +7,4 @@ Resources:
         LoadBalancerInfo:
           ContainerName: "webapp-prod-container"
           ContainerPort: 8080
+        PlatformVersion: "LATEST"
