@@ -1,5 +1,5 @@
 # Stage 1: Build the React frontend
-FROM node:16-alpine AS frontend-builder
+FROM public.ecr.aws/docker/library/node:16-alpine AS frontend-builder
 WORKDIR /app/webapp-frontend
 COPY webapp-frontend/package.json webapp-frontend/package-lock.json ./
 RUN npm install
@@ -7,7 +7,7 @@ COPY webapp-frontend/ ./
 RUN npm run build
 
 # Stage 2: Build the Java backend
-FROM maven:3.9.9-amazoncorretto-21 AS backend-builder
+FROM  public.ecr.aws/docker/library/maven:3.9.9-amazoncorretto-21 AS backend-builder
 WORKDIR /app/webapp
 COPY webapp/pom.xml .
 RUN mvn dependency:go-offline
