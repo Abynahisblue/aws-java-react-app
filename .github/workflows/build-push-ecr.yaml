@@ -3,13 +3,11 @@ name: Build and Push to ECR
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 env:
   AWS_REGION: eu-central-1
   ECR_REPOSITORY: webapp-prod-app
-  CONTAINER_PORT: 8080
+  BASE_IMAGE: public.ecr.aws/amazoncorretto/amazoncorretto:21-alpine3.17-jdk
 
 jobs:
   build-and-push:
@@ -27,40 +25,30 @@ jobs:
         with:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: ${{ secrets.AWS_IAM_ROLE_ARN }}
-          role-session-name: GitHubActions-${{ github.run_id }}
 
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Verify base image exists
+      - name: Pull and push base image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          aws ecr-public describe-images \
-            --repository-name amazoncorretto/amazoncorretto \
-            --region us-east-1 \
-            --query 'imageDetails[].imageTags[]' \
-            --output text | grep "21-alpine"
+          # Pull from ECR Public
+          docker pull ${{ env.BASE_IMAGE }}
+          
+          # Tag for private ECR
+          docker tag ${{ env.BASE_IMAGE }} $ECR_REGISTRY/base-images/amazoncorretto:21-alpine-jdk
+          
+          # Push to private ECR
+          docker push $ECR_REGISTRY/base-images/amazoncorretto:21-alpine-jdk
 
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
+      - name: Build and push application image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          # Build the Docker image
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
-          
-          # Tag with commit SHA
           docker tag $ECR_REGISTRY/$ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          
-          # Push both tags
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          
-          echo "image_uri=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
-          echo "image_uri_latest=$ECR_REGISTRY/$ECR_REPOSITORY:latest" >> $GITHUB_OUTPUT
-
-      - name: Output image URI
-        run: |
-          echo "Image URI: ${{ steps.build-image.outputs.image_uri }}"
-          echo "Latest Image URI: ${{ steps.build-image.outputs.image_uri_latest }}"
