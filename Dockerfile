@@ -16,7 +16,7 @@ RUN mvn package -DskipTests
 
 # Stage 3: Create the final image
 # Changed the base image to a publicly available Amazon Corretto 21 Alpine JDK image
-FROM public.ecr.aws/amazoncorretto/corretto:21-alpine
+FROM public.ecr.aws/amazoncorretto/amazoncorretto:21
 WORKDIR /app
 
 # Copy the built backend JAR
