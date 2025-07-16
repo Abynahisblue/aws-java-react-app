@@ -38,10 +38,10 @@ jobs:
           docker pull ${{ env.BASE_IMAGE }}
           
           # Tag for private ECR
-          docker tag ${{ env.BASE_IMAGE }} $ECR_REGISTRY/base-images/amazoncorretto:21-alpine-jdk
+          docker tag public.ecr.aws/amazoncorretto/amazoncorretto:21 $ECR_REGISTRY/$ECR_REPOSITORY:base-corretto
           
           # Push to private ECR
-          docker push $ECR_REGISTRY/base-images/amazoncorretto:21-alpine-jdk
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:base-corretto
 
       - name: Build and push application image
         env:
