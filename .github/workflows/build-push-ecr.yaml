@@ -7,8 +7,8 @@ on:
     branches: [ main ]
 
 env:
-  AWS_REGION: eu-central-1  # Change to your region
-  ECR_REPOSITORY: webapp-prod-app  # Change to match your ECR repository name
+  AWS_REGION: eu-central-1
+  ECR_REPOSITORY: webapp-prod-app
   CONTAINER_PORT: 8080
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write  # Required for AWS OIDC authentication
+      id-token: write
 
     steps:
       - name: Checkout repository
@@ -25,12 +25,21 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_IAM_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_IAM_ROLE_ARN }}
+          role-session-name: GitHubActions-${{ github.run_id }}
 
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Verify base image exists
+        run: |
+          aws ecr-public describe-images \
+            --repository-name amazoncorretto/amazoncorretto \
+            --region us-east-1 \
+            --query 'imageDetails[].imageTags[]' \
+            --output text | grep "21-alpine"
 
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
@@ -48,7 +57,6 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           
-          # Set outputs for other steps
           echo "image_uri=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
           echo "image_uri_latest=$ECR_REGISTRY/$ECR_REPOSITORY:latest" >> $GITHUB_OUTPUT
 
