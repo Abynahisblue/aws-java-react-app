@@ -3,9 +3,6 @@ name: Build and Push to ECR
 on:
   push:
     branches: [ main ]
-    paths:
-      - '**' # Trigger on all changes
-      - '!.github/workflows/**' # Exclude workflow file changes to prevent loops
 
 env:
   AWS_REGION: eu-central-1
@@ -13,6 +10,7 @@ env:
   CONTAINER_PORT: 8080
   PROJECT_NAME: webapp
   ENVIRONMENT: prod
+
 
 jobs:
   build-and-push:
