@@ -15,7 +15,7 @@ COPY webapp/src ./src
 RUN mvn package -DskipTests
 
 # Stage 3: Create the final image
-FROM amazoncorretto:21-alpine
+FROM public.ecr.aws/amazoncorretto/amazoncorretto:21-alpine
 WORKDIR /app
 
 # Copy the built backend JAR
