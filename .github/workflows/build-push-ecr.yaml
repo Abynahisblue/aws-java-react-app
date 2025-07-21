@@ -3,10 +3,10 @@ name: Build and Push to ECR
 on:
   push:
     branches: [ main ]
-    paths-ignore:
-      - '**/*.yaml'
-      - '**/*.yml'
-      - '.github/workflows/deploy.yml'
+    # paths-ignore:
+    #   - '**/*.yaml'
+    #   - '**/*.yml'
+    #   - '.github/workflows/deploy.yml'
       
 env:
   AWS_REGION: eu-central-1
