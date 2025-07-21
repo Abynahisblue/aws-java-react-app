@@ -3,6 +3,10 @@ name: Build and Push to ECR
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - '**/*.yaml'
+      - '**/*.yml'
+      - '.github/workflows/deploy.yml'
 
 env:
   AWS_REGION: eu-central-1
@@ -10,7 +14,6 @@ env:
   CONTAINER_PORT: 8080
   PROJECT_NAME: webapp
   ENVIRONMENT: prod
-
 
 jobs:
   build-and-push:
@@ -39,21 +42,52 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           # Build the Docker image
+          echo "Building Docker image..."
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           
-          # Push the image to ECR
+          # Push the image to ECR with commit hash tag
+          echo "Pushing image with tag: $IMAGE_TAG"
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           
           # Also tag as latest and push
+          echo "Tagging and pushing as latest..."
           docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
           
           # Output the image URI for subsequent steps
           echo "IMAGE_URI=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_ENV
+          echo "✅ Image pushed successfully: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
-      - name: Trigger CodePipeline
+      - name: Wait for ECR propagation
         run: |
-          # Trigger the CodePipeline execution
-          aws codepipeline start-pipeline-execution \
-            --name ${{ env.PROJECT_NAME }}-${{ env.ENVIRONMENT }}-pipeline \
-            --region ${{ env.AWS_REGION }}
+          echo "Waiting for ECR image to propagate..."
+          sleep 30
+
+      - name: Check if CodePipeline exists and trigger
+        run: |
+          # Check if the pipeline exists
+          if aws codepipeline get-pipeline --name ${{ env.PROJECT_NAME }}-${{ env.ENVIRONMENT }}-pipeline --region ${{ env.AWS_REGION }} > /dev/null 2>&1; then
+            echo "✅ CodePipeline found. Triggering deployment..."
+            
+            # Trigger the CodePipeline execution
+            EXECUTION_ID=$(aws codepipeline start-pipeline-execution \
+              --name ${{ env.PROJECT_NAME }}-${{ env.ENVIRONMENT }}-pipeline \
+              --region ${{ env.AWS_REGION }} \
+              --query 'pipelineExecutionId' \
+              --output text)
+            
+            echo "🚀 CodePipeline execution started with ID: $EXECUTION_ID"
+            echo "📊 You can monitor the deployment at: https://${{ env.AWS_REGION }}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${{ env.PROJECT_NAME }}-${{ env.ENVIRONMENT }}-pipeline/view"
+          else
+            echo "⚠️ CodePipeline not found. Deploy the pipeline first using the CloudFormation templates."
+            echo "💡 Run the deploy.yml workflow or deploy the pipeline stack manually."
+            exit 1
+          fi
+
+      - name: Output deployment info
+        run: |
+          echo "🎯 Deployment Summary:"
+          echo "📦 Image: ${{ env.IMAGE_URI }}"
+          echo "🏷️  Tag: ${{ github.sha }}"
+          echo "🚀 Pipeline: ${{ env.PROJECT_NAME }}-${{ env.ENVIRONMENT }}-pipeline"
+          echo "🌐 Region: ${{ env.AWS_REGION }}"
