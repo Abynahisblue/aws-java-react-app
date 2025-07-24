@@ -1,15 +1,8 @@
 version: '3.8'
 services:
   webapp:
-    # Build the image using the Dockerfile in the current directory
     build: .
-    # Map port 8080 from the container to port 8080 on the host
     ports:
       - "8080:8080"
-    environment:
-       - AWS_REGION=${AWS_REGION}
-       - S3_BUCKET_NAME=${S3_BUCKET_NAME}
-       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      
-    
+    env_file:
+      - .env  # Create this file with your environment variables
