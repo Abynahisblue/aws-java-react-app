@@ -28,5 +28,8 @@ COPY --from=frontend-builder /app/webapp-frontend/build /app/src/main/resources/
 # Expose the port the application runs on
 EXPOSE 8080
 
+HEALTHCHECK --interval=30s --timeout=15s --start-period=180s --retries=5 \
+  CMD curl -f http://localhost:8080/actuator/health || exit 1
+
 # Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
