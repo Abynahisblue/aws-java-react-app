@@ -6,13 +6,24 @@ function App() {
   const [images, setImages] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [message, setMessage] = useState('');
+  const [description, setDescription] = useState('');
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   const apiEndpoint = 'http://localhost:8080'; // API is served from the same origin
 
   const fetchImages = async () => {
     try {
-      const response = await axios.get(`${apiEndpoint}/api/images`);
-      setImages(response.data);
+      const response = await axios.get(`${apiEndpoint}/api/images?page=${currentPage}&size=10`);
+      
+      // Handle paginated response
+      if (response.data.content) {
+        setImages(response.data.content);
+        setTotalPages(response.data.totalPages);
+      } else {
+        // Handle simple array response
+        setImages(response.data);
+      }
     } catch (error) {
       console.error("Error fetching images:", error);
       setMessage('Could not fetch images.');
@@ -35,20 +46,18 @@ function App() {
 
     const formData = new FormData();
     formData.append('file', selectedFile);
+    formData.append('description', description);
 
     try {
       setMessage('Uploading...');
       const response = await axios.post(`${apiEndpoint}/api/images/upload`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
       setMessage(response.data);
       setSelectedFile(null);
-      document.getElementById('fileInput').value = null;
-      fetchImages(); // Refresh the image list
+      setDescription('');
+      fetchImages();
     } catch (error) {
-      console.error("Error uploading file:", error);
       setMessage('Error uploading file.');
     }
   };
@@ -69,9 +78,12 @@ function App() {
           <h2>Gallery</h2>
           <div className="image-grid">
             {images.length > 0 ? (
-                images.map((imgUrl, index) => (
+                images.map((item, index) => (
                     <div key={index} className="image-card">
-                      <img src={imgUrl} alt={`gallery item ${index}`} />
+                      <img src={typeof item === 'string' ? item : item.s3Url} alt={`gallery item ${index}`} />
+                      {typeof item === 'object' && item.description && (
+                        <p className="image-description">{item.description}</p>
+                      )}
                     </div>
                 ))
             ) : (
@@ -84,3 +96,5 @@ function App() {
 }
 
 export default App;
+
+
