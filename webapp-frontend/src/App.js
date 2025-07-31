@@ -10,7 +10,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
-  const apiEndpoint = 'http://webapp-prod-alb-1582454515.eu-central-1.elb.amazonaws.com'; // API is served from the same origin
+  const apiEndpoint = 'http://webapp-prod-alb-1582454515.eu-central-1.elb.amazonaws.com' || 'http://localhost:8080'; // API is served from the same origin
 
   const fetchImages = async () => {
     try {
@@ -65,7 +65,7 @@ function App() {
   return (
       <div className="App">
         <header className="App-header">
-          <h1>Image Gallery</h1>
+          <h1>Image Gallery, (Upload your image)</h1>
           <p>Upload and view images stored in S3</p>
         </header>
         <div className="upload-section">
