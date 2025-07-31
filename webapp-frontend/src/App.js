@@ -10,7 +10,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
-  const apiEndpoint = 'http://localhost:8080'; // API is served from the same origin
+  const apiEndpoint = 'http://webapp-prod-alb-1582454515.eu-central-1.elb.amazonaws.com'; // API is served from the same origin
 
   const fetchImages = async () => {
     try {
