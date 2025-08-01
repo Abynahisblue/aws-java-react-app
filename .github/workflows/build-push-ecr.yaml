@@ -63,26 +63,26 @@ jobs:
           echo "Waiting for ECR image to propagate..."
           sleep 30
 
-      # - name: Check if CodePipeline exists and trigger
-      #   run: |
-      #     # Check if the pipeline exists
-      #     if aws codepipeline get-pipeline --name ${{ env.PROJECT_NAME }}-${{ env.ENVIRONMENT }}-pipeline --region ${{ env.AWS_REGION }} > /dev/null 2>&1; then
-      #       echo "✅ CodePipeline found. Triggering deployment..."
+      - name: Check if CodePipeline exists and trigger
+        run: |
+          # Check if the pipeline exists
+          if aws codepipeline get-pipeline --name ${{ env.PROJECT_NAME }}-${{ env.ENVIRONMENT }}-pipeline --region ${{ env.AWS_REGION }} > /dev/null 2>&1; then
+            echo "✅ CodePipeline found. Triggering deployment..."
             
-      #       # Trigger the CodePipeline execution
-      #       EXECUTION_ID=$(aws codepipeline start-pipeline-execution \
-      #         --name ${{ env.PROJECT_NAME }}-${{ env.ENVIRONMENT }}-pipeline \
-      #         --region ${{ env.AWS_REGION }} \
-      #         --query 'pipelineExecutionId' \
-      #         --output text)
+            # Trigger the CodePipeline execution
+            EXECUTION_ID=$(aws codepipeline start-pipeline-execution \
+              --name ${{ env.PROJECT_NAME }}-${{ env.ENVIRONMENT }}-pipeline \
+              --region ${{ env.AWS_REGION }} \
+              --query 'pipelineExecutionId' \
+              --output text)
             
-      #       echo "🚀 CodePipeline execution started with ID: $EXECUTION_ID"
-      #       echo "📊 You can monitor the deployment at: https://${{ env.AWS_REGION }}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${{ env.PROJECT_NAME }}-${{ env.ENVIRONMENT }}-pipeline/view"
-      #     else
-      #       echo "⚠️ CodePipeline not found. Skipping deployment trigger."
-      #       echo "💡 The image has been built and pushed successfully to ECR."
-      #       echo "🔧 Deploy the pipeline first using the CloudFormation templates when ready."
-      #     fi
+            echo "🚀 CodePipeline execution started with ID: $EXECUTION_ID"
+            echo "📊 You can monitor the deployment at: https://${{ env.AWS_REGION }}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${{ env.PROJECT_NAME }}-${{ env.ENVIRONMENT }}-pipeline/view"
+          else
+            echo "⚠️ CodePipeline not found. Skipping deployment trigger."
+            echo "💡 The image has been built and pushed successfully to ECR."
+            echo "🔧 Deploy the pipeline first using the CloudFormation templates when ready."
+          fi
 
       - name: Output deployment info
         run: |
