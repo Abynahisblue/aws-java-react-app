@@ -12,7 +12,7 @@
       "image": "IMAGE1_NAME",
       "portMappings": [
         {
-          "containerPort": <CONTAINER_PORT>,
+          "containerPort": "<CONTAINER_PORT>",
           "protocol": "tcp"
         }
       ],
