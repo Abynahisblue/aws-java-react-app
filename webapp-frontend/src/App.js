@@ -65,7 +65,7 @@ function App() {
   return (
       <div className="App">
         <header className="App-header">
-          <h1>Image Gallery, (Upload your image)</h1>
+          <h1>Image Gallery, (Upload your image and view)</h1>
           <p>Upload and view images stored in S3</p>
         </header>
         <div className="upload-section">
