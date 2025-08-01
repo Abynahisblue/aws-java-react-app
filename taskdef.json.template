@@ -2,8 +2,8 @@
   "family": "<PROJECT_NAME>-<ENVIRONMENT>-task",
   "networkMode": "awsvpc",
   "requiresCompatibilities": ["FARGATE"],
-  "cpu": "512",
-  "memory": "1024",
+  "cpu": "1024",
+  "memory": "2048",
   "executionRoleArn": "arn:aws:iam::<AWS_ACCOUNT_ID>:role/<PROJECT_NAME>-<ENVIRONMENT>-ECSTaskExecutionRole",
   "taskRoleArn": "arn:aws:iam::<AWS_ACCOUNT_ID>:role/<PROJECT_NAME>-<ENVIRONMENT>-ECSTaskRole",
   "containerDefinitions": [
@@ -20,6 +20,10 @@
         {
           "name": "AWS_REGION",
           "value": "<AWS_REGION>"
+        },
+        { 
+          "name": "S3_BUCKET_NAME", 
+          "value": "<S3_BUCKET_NAME>" 
         },
         {
           "name": "ENVIRONMENT", 
@@ -38,7 +42,7 @@
       "healthCheck": {
         "command": [
           "CMD-SHELL",
-          "curl -f http://localhost:<CONTAINER_PORT>/actuator/health || exit 1"
+          "curl -f http://localhost:8080/actuator/health || exit 1"
         ],
         "interval": 30,
         "timeout": 5,
