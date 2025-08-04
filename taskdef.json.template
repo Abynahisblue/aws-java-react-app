@@ -10,36 +10,35 @@
     {
       "name": "webapp-prod-container",
       "image": "<IMAGE1_URI>",
+      "essential": true,
       "portMappings": [
         {
           "containerPort": 8080,
           "protocol": "tcp"
         }
       ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/webapp-prod",
+          "awslogs-region": "eu-central-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
       "environment": [
         {
           "name": "AWS_REGION",
           "value": "eu-central-1"
         },
-        { 
-          "name": "S3_BUCKET_NAME", 
-          "value": "webapp-prod-images-314146322404-eu-central-1" 
+        {
+          "name": "S3_BUCKET_NAME",
+          "value": "webapp-prod-images-314146322404-eu-central-1"
         },
         {
-          "name": "ENVIRONMENT", 
+          "name": "ENVIRONMENT",
           "value": "prod"
         }
       ],
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "options": {
-          "awslogs-group": "/ecs/webapp-prod",,
-          "awslogs-region": "eu-central-1",
-          "awslogs-stream-prefix": "ecs"
-        }
-      },
-      "essential": true,
       "healthCheck": {
         "command": [
           "CMD-SHELL",
