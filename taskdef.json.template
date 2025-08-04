@@ -1,40 +1,40 @@
 {
-  "family": "<PROJECT_NAME>-<ENVIRONMENT>-task",
+  "family": "webapp-prod-task",
   "networkMode": "awsvpc",
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "1024",
   "memory": "2048",
-  "executionRoleArn": "arn:aws:iam::<AWS_ACCOUNT_ID>:role/<PROJECT_NAME>-<ENVIRONMENT>-ECSTaskExecutionRole",
-  "taskRoleArn": "arn:aws:iam::<AWS_ACCOUNT_ID>:role/<PROJECT_NAME>-<ENVIRONMENT>-ECSTaskRole",
+  "executionRoleArn": "arn:aws:iam::314146322404:role/webapp-prod-ECSTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::314146322404:role/webapp-prod-ECSTaskRole",
   "containerDefinitions": [
     {
-      "name": "<PROJECT_NAME>-<ENVIRONMENT>-container",
+      "name": "webapp-prod-container",
       "image": "<IMAGE1_URI>",
       "portMappings": [
         {
-          "containerPort": "<CONTAINER_PORT>",
+          "containerPort": 8080,
           "protocol": "tcp"
         }
       ],
       "environment": [
         {
           "name": "AWS_REGION",
-          "value": "<AWS_REGION>"
+          "value": "eu-central-1"
         },
         { 
           "name": "S3_BUCKET_NAME", 
-          "value": "<S3_BUCKET_NAME>" 
+          "value": "webapp-prod-images-314146322404-eu-central-1" 
         },
         {
           "name": "ENVIRONMENT", 
-          "value": "<ENVIRONMENT>"
+          "value": "prod"
         }
       ],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/aws/ecs/<PROJECT_NAME>-<ENVIRONMENT>",
-          "awslogs-region": "<AWS_REGION>",
+          "awslogs-group": "/aws/ecs/webapp-prod",
+          "awslogs-region": "eu-central-1",
           "awslogs-stream-prefix": "ecs"
         }
       },
@@ -42,7 +42,7 @@
       "healthCheck": {
         "command": [
           "CMD-SHELL",
-          "curl -f http://localhost:<CONTAINER_PORT>/actuator/health || exit 1"
+          "curl -f http://localhost:8080/actuator/health || exit 1"
         ],
         "interval": 30,
         "timeout": 5,
