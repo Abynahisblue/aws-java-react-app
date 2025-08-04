@@ -33,7 +33,8 @@
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/aws/ecs/webapp-prod",
+          "options": {
+          "awslogs-group": "/ecs/webapp-prod",,
           "awslogs-region": "eu-central-1",
           "awslogs-stream-prefix": "ecs"
         }
