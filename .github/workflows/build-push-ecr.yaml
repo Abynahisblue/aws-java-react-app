@@ -50,7 +50,7 @@ jobs:
       - name: Create and Upload Deployment Bundle
         run: |
           echo "Zipping deployment configuration..."
-          zip deployment.zip appspec.yaml taskdef.json
+          zip deployment.zip appspec.yaml.template taskdef.json.template
           
           echo "Uploading deployment bundle to S3..."
           aws s3 cp deployment.zip s3://${{ env.ARTIFACTS_BUCKET }}/deployment/deployment.zip
