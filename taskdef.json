@@ -9,7 +9,7 @@
   "containerDefinitions": [
     {
       "name": "webapp-prod-container",
-      "image": "IMAGE_URI" ,
+      "image": "<IMAGE_URI>" ,
       "essential": true,
       "portMappings": [
         {
