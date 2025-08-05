@@ -9,22 +9,13 @@
   "containerDefinitions": [
     {
       "name": "webapp-prod-container",
-      "image": <IMAGE1_URI>,
-      "essential": true,
+      "image": "<IMAGE1_URI>",
       "portMappings": [
         {
           "containerPort": 8080,
           "protocol": "tcp"
         }
       ],
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/ecs/webapp-prod",
-          "awslogs-region": "eu-central-1",
-          "awslogs-stream-prefix": "ecs"
-        }
-      },
       "environment": [
         {
           "name": "AWS_REGION",
@@ -39,16 +30,15 @@
           "value": "prod"
         }
       ],
-      "healthCheck": {
-        "command": [
-          "CMD-SHELL",
-          "curl -f http://localhost:8080/actuator/health || exit 1"
-        ],
-        "interval": 30,
-        "timeout": 5,
-        "retries": 3,
-        "startPeriod": 60
-      }
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/webapp-prod",
+          "awslogs-region": "eu-central-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "essential": true
     }
   ]
 }
