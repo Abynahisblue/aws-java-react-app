@@ -9,7 +9,7 @@
   "containerDefinitions": [
     {
       "name": "webapp-prod-container",
-      "image": "IMAGE1_URI",
+      "image": "314146322404.dkr.ecr.eu-central-1.amazonaws.com/webapp-prod-app:latest",
       "essential": true,
       "portMappings": [
         {
