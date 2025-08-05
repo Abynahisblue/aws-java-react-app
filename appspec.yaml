@@ -4,3 +4,6 @@ Resources:
       Type: AWS::ECS::Service
       Properties:
         TaskDefinition: <TASK_DEFINITION>
+        LoadBalancerInfo:
+          ContainerName: "webapp-prod-container"
+          ContainerPort: 8080
